@@ -1,5 +1,6 @@
 SET search_path TO tienda;
 
+DROP TABLE IF EXISTS detalle_venta;
 DROP TABLE IF EXISTS venta;
 DROP TABLE IF EXISTS producto;
 DROP TABLE IF EXISTS usuario_rol;
@@ -58,4 +59,12 @@ CREATE TABLE venta (
     fecha_venta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     total_venta NUMERIC(12,2) NOT NULL CONSTRAINT ck1_venta CHECK (total_venta >= 0),
     usuario_id INT REFERENCES usuario(usuario_id)
+);
+
+CREATE TABLE detalle_venta (
+    detalle_id SERIAL PRIMARY KEY,
+    cantidad INT NOT NULL CONSTRAINT ck1_detalle_venta CHECK (cantidad > 0),
+    precio_unitario NUMERIC(12,2) NOT NULL CONSTRAINT ck2_detalle CHECK (precio_unitario >= 0),
+    venta_id INT REFERENCES venta(venta_id),
+    producto_id INT REFERENCES producto(producto_id)
 );
