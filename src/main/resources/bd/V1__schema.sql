@@ -1,5 +1,6 @@
 SET search_path TO tienda;
 
+DROP TABLE IF EXISTS usuario_rol;
 DROP TABLE IF EXISTS proveedor;
 DROP TABLE IF EXISTS categoria;
 DROP TABLE IF EXISTS usuarios;
@@ -32,4 +33,10 @@ CREATE TABLE proveedor (
     telefono_proveedor VARCHAR(20),
     email_proveedor VARCHAR(150) NOT NULL UNIQUE,
     direccion_proveedor VARCHAR(150)
+);
+
+CREATE TABLE usuario_rol (
+    usuario_id INT REFERENCES usuarios(usuario_id),
+    id_rol INT REFERENCES rol(id_rol),
+    PRIMARY KEY (usuario_id, id_rol)
 );
