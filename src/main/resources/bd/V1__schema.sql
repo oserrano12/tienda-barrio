@@ -1,9 +1,10 @@
 SET search_path TO tienda;
 
+DROP TABLE IF EXISTS producto;
 DROP TABLE IF EXISTS usuario_rol;
 DROP TABLE IF EXISTS proveedor;
 DROP TABLE IF EXISTS categoria;
-DROP TABLE IF EXISTS usuarios;
+DROP TABLE IF EXISTS usuario;
 DROP TABLE IF EXISTS rol;
 
 CREATE TABLE rol (
@@ -12,7 +13,7 @@ CREATE TABLE rol (
     descripcion_rol TEXT
 );
 
-CREATE TABLE usuarios (
+CREATE TABLE usuario (
     usuario_id SERIAL PRIMARY KEY,
     nombre_usuario VARCHAR(100) NOT NULL UNIQUE,
     email_usuario VARCHAR(150) NOT NULL UNIQUE,
@@ -40,3 +41,14 @@ CREATE TABLE usuario_rol (
     id_rol INT REFERENCES rol(id_rol),
     PRIMARY KEY (usuario_id, id_rol)
 );
+
+CREATE TABLE producto (
+    producto_id SERIAL PRIMARY KEY,
+    nombre_producto VARCHAR(150) NOT NULL,
+    precio_producto NUMERIC(12, 2) NOT NULL CONSTRAINT ck1_precio_producto CHECK (precio_producto >= 0),
+    stock_producto INT NOT NULL CONSTRAINT ck2_stock_producto CHECK (stock_producto >= 0),
+    activo BOOLEAN DEFAULT TRUE,
+    categoria_id INT REFERENCES categoria(categoria_id),
+    proveedor_id INT REFERENCES proveedor(proveedor_id)
+);
+
