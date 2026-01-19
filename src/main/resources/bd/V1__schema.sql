@@ -1,5 +1,7 @@
 SET search_path TO tienda;
 
+DROP TABLE IF EXISTS proveedor;
+DROP TABLE IF EXISTS categoria;
 DROP TABLE IF EXISTS usuarios;
 DROP TABLE IF EXISTS rol;
 
@@ -16,4 +18,18 @@ CREATE TABLE usuarios (
     password_usuario VARCHAR(255) NOT NULL,
     activo BOOLEAN DEFAULT TRUE,
     fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categoria (
+    categoria_id SERIAL PRIMARY KEY,
+    nombre_categoria VARCHAR(100) NOT NULL UNIQUE,
+    descripcion_categoria TEXT
+);
+
+CREATE TABLE proveedor (
+    proveedor_id SERIAL PRIMARY KEY,
+    nombre_proveedor VARCHAR(150) NOT NULL,
+    telefono_proveedor VARCHAR(20),
+    email_proveedor VARCHAR(150) NOT NULL UNIQUE,
+    direccion_proveedor VARCHAR(150)
 );
