@@ -26,3 +26,10 @@ VALUES
     ('Lacteos', 'Productos derivados de la leche'),
     ('Aseo', 'Productos de limpieza e higiene'),
     ('Snacks', 'Golosinas y productos de consumo rapido');
+
+-- PROVEEDORES INICIALES
+INSERT INTO proveedor (nombre_proveedor, telefono_proveedor, email_proveedor, direccion_proveedor)
+VALUES
+    ('Proveedor General', '0000000000', 'proveedor@email.com', 'Sin inf'),
+    ('Distribuidor Local', '1111111111', 'distlocal@email.com', 'Sin inf');
+
