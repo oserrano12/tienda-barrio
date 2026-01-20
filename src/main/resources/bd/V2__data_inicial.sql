@@ -33,3 +33,22 @@ VALUES
     ('Proveedor General', '0000000000', 'proveedor@email.com', 'Sin inf'),
     ('Distribuidor Local', '1111111111', 'distlocal@email.com', 'Sin inf');
 
+-- INSERCION DE PRODUCTOS INICIALES
+INSERT INTO producto (nombre_producto, precio_producto, stock_producto, activo, categoria_id, proveedor_id)
+VALUES (
+    'Gaseosa 1.5L',
+    4500.00,
+    20,
+    TRUE, 
+    1, -- Bebidas
+    2 -- Distribuidor local
+),
+(
+    'Detergente 500g',
+    3800.00,
+    20,
+    TRUE,
+    2, -- Aseo
+    1 -- Proveedor general
+);
+
