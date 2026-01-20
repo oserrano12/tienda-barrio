@@ -17,3 +17,12 @@ VALUES (
     (SELECT usuario_id FROM usuario WHERE nombre_usuario = 'admin'),
     (SELECT id_rol FROM rol WHERE nombre_rol = 'ADMIN')
 );
+
+-- CATEGORIAS BASE PRODUCTOS
+INSERT INTO categoria (nombre_categoria, descripcion_categoria)
+VALUES
+    ('Abarrotes', 'Productos de consumo diario'),
+    ('Bebidas', 'Productos liquidos para consumo'),
+    ('Lacteos', 'Productos derivados de la leche'),
+    ('Aseo', 'Productos de limpieza e higiene'),
+    ('Snacks', 'Golosinas y productos de consumo rapido');
