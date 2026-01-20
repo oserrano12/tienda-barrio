@@ -51,4 +51,3 @@ VALUES (
     2, -- Aseo
     1 -- Proveedor general
 );
-
