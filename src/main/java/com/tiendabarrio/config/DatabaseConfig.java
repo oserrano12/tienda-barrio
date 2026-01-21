@@ -6,7 +6,7 @@ import java.util.Properties;
 /**
  * Esta clase se encarga de leer la configuración
  * de la base de datos desde application.properties
- */
+ **/
 public class DatabaseConfig {
 
     // Objeto Properties para cargar el archivo .properties
