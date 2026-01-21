@@ -22,7 +22,7 @@ public class Categoria {
     }
 
     public void setCategoriaId(int categoriaId) {
-        categoriaId = categoriaId;
+        this.categoriaId = categoriaId;
     }
 
     public String getNombreCategoria() {
