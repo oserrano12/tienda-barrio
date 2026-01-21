@@ -2,7 +2,7 @@ package com.tiendabarrio.model;
 
 import java.time.LocalDateTime;
 
-public class usuario {
+public class Usuario {
     // PRIMARY KEY
     private int usuarioId;
 
@@ -13,10 +13,10 @@ public class usuario {
     private boolean activo;
     private LocalDateTime fechaCreacion;
 
-    public usuario() {
+    public Usuario() {
     }
 
-    public usuario(int usuarioId, String nombreUsuario, String emailUsuario, String passwordUsuario, boolean activo) {
+    public Usuario(int usuarioId, String nombreUsuario, String emailUsuario, String passwordUsuario, boolean activo) {
         this.usuarioId = usuarioId;
         this.nombreUsuario = nombreUsuario;
         this.emailUsuario = emailUsuario;
