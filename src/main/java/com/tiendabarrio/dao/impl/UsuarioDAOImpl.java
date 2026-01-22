@@ -5,17 +5,14 @@ import com.tiendabarrio.dao.UsuarioDAO;
 import com.tiendabarrio.model.Usuario;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-// Implementación JDBC del DAO Usuario
 public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public void crear(Usuario usuario) {
-        String sql = "INSERT INTO usuario (nombre_usuario, email_usuario, password_usuario, activo) " +
-                "VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO usuario (nombre_usuario, email_usuario, password_usuario, activo) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -24,11 +21,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             ps.setString(2, usuario.getEmailUsuario());
             ps.setString(3, usuario.getPasswordUsuario());
             ps.setBoolean(4, usuario.isActivo());
-
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al crear usuario", e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -49,7 +45,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar usuario por id", e);
+            throw new RuntimeException(e);
         }
 
         return usuario;
@@ -72,7 +68,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar usuario por email", e);
+            throw new RuntimeException(e);
         }
 
         return usuario;
@@ -92,7 +88,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al listar usuarios", e);
+            throw new RuntimeException(e);
         }
 
         return usuarios;
@@ -100,43 +96,37 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public void actualizar(Usuario usuario) {
-        String sql = "UPDATE usuario SET nombre_usuario = ?, email_usuario = ?, password_usuario = ?, activo = ? " +
-                "WHERE usuario_id = ?";
+        String sql = "UPDATE usuario SET nombre_usuario = ?, email_usuario = ?, activo = ? WHERE usuario_id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, usuario.getNombreUsuario());
             ps.setString(2, usuario.getEmailUsuario());
-            ps.setString(3, usuario.getPasswordUsuario());
-            ps.setBoolean(4, usuario.isActivo());
-            ps.setInt(5, usuario.getUsuarioId());
-
+            ps.setBoolean(3, usuario.isActivo());
+            ps.setInt(4, usuario.getUsuarioId());
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al actualizar usuario", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void cambiarEstado(int id, boolean activo) {
-        String sql = "UPDATE usuario SET activo = ? WHERE usuario_id = ?";
+    public void eliminar(int id) {
+        String sql = "DELETE FROM usuario WHERE usuario_id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setBoolean(1, activo);
-            ps.setInt(2, id);
-
+            ps.setInt(1, id);
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al cambiar estado del usuario", e);
+            throw new RuntimeException(e);
         }
     }
 
-    // Convierte un ResultSet en un objeto Usuario
     private Usuario mapearUsuario(ResultSet rs) throws SQLException {
         Usuario usuario = new Usuario();
         usuario.setUsuarioId(rs.getInt("usuario_id"));
@@ -144,12 +134,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         usuario.setEmailUsuario(rs.getString("email_usuario"));
         usuario.setPasswordUsuario(rs.getString("password_usuario"));
         usuario.setActivo(rs.getBoolean("activo"));
-
-        Timestamp ts = rs.getTimestamp("fecha_creacion");
-        if (ts != null) {
-            usuario.setFechaCreacion(ts.toLocalDateTime());
-        }
-
+        usuario.setFechaCreacion(rs.getTimestamp("fecha_creacion").toLocalDateTime());
         return usuario;
     }
 }
