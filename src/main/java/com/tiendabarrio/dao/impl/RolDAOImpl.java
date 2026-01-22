@@ -4,7 +4,10 @@ import com.tiendabarrio.config.ConnectionFactory;
 import com.tiendabarrio.dao.RolDAO;
 import com.tiendabarrio.model.Rol;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +23,6 @@ public class RolDAOImpl implements RolDAO {
 
             ps.setString(1, rol.getNombreRol());
             ps.setString(2, rol.getDescripcionRol());
-
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -29,7 +31,7 @@ public class RolDAOImpl implements RolDAO {
     }
 
     @Override
-    public Rol buscarPorId(int id) {
+    public Rol obtenerPorId(int id) {
         String sql = "SELECT * FROM rol WHERE id_rol = ?";
         Rol rol = null;
 
@@ -45,14 +47,14 @@ public class RolDAOImpl implements RolDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar rol por id", e);
+            throw new RuntimeException("Error al obtener rol por id", e);
         }
 
         return rol;
     }
 
     @Override
-    public Rol buscarPorNombre(String nombre) {
+    public Rol obtenerPorNombre(String nombre) {
         String sql = "SELECT * FROM rol WHERE nombre_rol = ?";
         Rol rol = null;
 
@@ -68,7 +70,7 @@ public class RolDAOImpl implements RolDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar rol por nombre", e);
+            throw new RuntimeException("Error al obtener rol por nombre", e);
         }
 
         return rol;
@@ -104,7 +106,6 @@ public class RolDAOImpl implements RolDAO {
             ps.setString(1, rol.getNombreRol());
             ps.setString(2, rol.getDescripcionRol());
             ps.setInt(3, rol.getIdRol());
-
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -127,7 +128,7 @@ public class RolDAOImpl implements RolDAO {
         }
     }
 
-    // Convierte un ResultSet en un objeto Rol
+    // Mapea un ResultSet a un objeto Rol
     private Rol mapearRol(ResultSet rs) throws SQLException {
         Rol rol = new Rol();
         rol.setIdRol(rs.getInt("id_rol"));
