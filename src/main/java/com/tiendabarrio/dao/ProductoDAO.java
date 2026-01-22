@@ -7,13 +7,11 @@ public interface ProductoDAO {
 
     void crear(Producto producto);
 
-    Producto buscarPorId(int id);
+    Producto buscarPorId(int productoId);
 
     List<Producto> listarTodos();
 
-    List<Producto> listarActivos();
-
     void actualizar(Producto producto);
 
-    void cambiarEstado(int id, boolean activo);
+    void eliminar(int productoId);
 }

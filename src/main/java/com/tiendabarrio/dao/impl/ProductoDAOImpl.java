@@ -12,11 +12,7 @@ public class ProductoDAOImpl implements ProductoDAO {
 
     @Override
     public void crear(Producto producto) {
-        String sql = """
-            INSERT INTO producto
-            (nombre_producto, precio_producto, stock_producto, activo, categoria_id, proveedor_id)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """;
+        String sql = "INSERT INTO producto (nombre_producto, precio_producto, stock_producto, activo, categoria_id, proveedor_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -27,32 +23,31 @@ public class ProductoDAOImpl implements ProductoDAO {
             ps.setBoolean(4, producto.isActivo());
             ps.setInt(5, producto.getCategoriaId());
             ps.setInt(6, producto.getProveedorId());
-
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al crear producto", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Producto buscarPorId(int id) {
+    public Producto buscarPorId(int productoId) {
         String sql = "SELECT * FROM producto WHERE producto_id = ?";
         Producto producto = null;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setInt(1, productoId);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    producto = mapearProducto(rs);
+                    producto = mapear(rs);
                 }
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar producto por id", e);
+            throw new RuntimeException(e);
         }
 
         return producto;
@@ -68,31 +63,11 @@ public class ProductoDAOImpl implements ProductoDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                productos.add(mapearProducto(rs));
+                productos.add(mapear(rs));
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al listar productos", e);
-        }
-
-        return productos;
-    }
-
-    @Override
-    public List<Producto> listarActivos() {
-        String sql = "SELECT * FROM producto WHERE activo = true";
-        List<Producto> productos = new ArrayList<>();
-
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                productos.add(mapearProducto(rs));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al listar productos activos", e);
+            throw new RuntimeException(e);
         }
 
         return productos;
@@ -100,12 +75,7 @@ public class ProductoDAOImpl implements ProductoDAO {
 
     @Override
     public void actualizar(Producto producto) {
-        String sql = """
-            UPDATE producto
-            SET nombre_producto = ?, precio_producto = ?, stock_producto = ?,
-                categoria_id = ?, proveedor_id = ?
-            WHERE producto_id = ?
-        """;
+        String sql = "UPDATE producto SET nombre_producto = ?, precio_producto = ?, stock_producto = ?, activo = ?, categoria_id = ?, proveedor_id = ? WHERE producto_id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -113,42 +83,41 @@ public class ProductoDAOImpl implements ProductoDAO {
             ps.setString(1, producto.getNombreProducto());
             ps.setBigDecimal(2, producto.getPrecioProducto());
             ps.setInt(3, producto.getStockProducto());
-            ps.setInt(4, producto.getCategoriaId());
-            ps.setInt(5, producto.getProveedorId());
-            ps.setInt(6, producto.getProductoId());
-
+            ps.setBoolean(4, producto.isActivo());
+            ps.setInt(5, producto.getCategoriaId());
+            ps.setInt(6, producto.getProveedorId());
+            ps.setInt(7, producto.getProductoId());
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al actualizar producto", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void cambiarEstado(int id, boolean activo) {
-        String sql = "UPDATE producto SET activo = ? WHERE producto_id = ?";
+    public void eliminar(int productoId) {
+        String sql = "DELETE FROM producto WHERE producto_id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setBoolean(1, activo);
-            ps.setInt(2, id);
+            ps.setInt(1, productoId);
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al cambiar estado del producto", e);
+            throw new RuntimeException(e);
         }
     }
 
-    private Producto mapearProducto(ResultSet rs) throws SQLException {
-        Producto producto = new Producto();
-        producto.setProductoId(rs.getInt("producto_id"));
-        producto.setNombreProducto(rs.getString("nombre_producto"));
-        producto.setPrecioProducto(rs.getBigDecimal("precio_producto"));
-        producto.setStockProducto(rs.getInt("stock_producto"));
-        producto.setActivo(rs.getBoolean("activo"));
-        producto.setCategoriaId(rs.getInt("categoria_id"));
-        producto.setProveedorId(rs.getInt("proveedor_id"));
-        return producto;
+    private Producto mapear(ResultSet rs) throws SQLException {
+        Producto p = new Producto();
+        p.setProductoId(rs.getInt("producto_id"));
+        p.setNombreProducto(rs.getString("nombre_producto"));
+        p.setPrecioProducto(rs.getBigDecimal("precio_producto"));
+        p.setStockProducto(rs.getInt("stock_producto"));
+        p.setActivo(rs.getBoolean("activo"));
+        p.setCategoriaId(rs.getInt("categoria_id"));
+        p.setProveedorId(rs.getInt("proveedor_id"));
+        return p;
     }
 }
