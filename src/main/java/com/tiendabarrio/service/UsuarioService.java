@@ -1,19 +1,20 @@
 package com.tiendabarrio.service;
 
 import com.tiendabarrio.model.Usuario;
+
 import java.util.List;
 
 public interface UsuarioService {
 
-    void crearUsuario(Usuario usuario);
+    void registrarUsuario(Usuario usuario, List<Integer> rolesIds);
 
-    Usuario obtenerUsuarioPorId(int id);
+    Usuario buscarPorId(int usuarioId);
 
-    Usuario obtenerUsuarioPorEmail(String email);
+    Usuario buscarPorEmail(String email);
 
-    List<Usuario> listarUsuarios();
+    List<Usuario> listarTodos();
 
-    void actualizarUsuario(Usuario usuario);
+    void desactivarUsuario(int usuarioId);
 
-    void cambiarEstadoUsuario(int id, boolean activo);
+    Usuario login(String email, String password);
 }
