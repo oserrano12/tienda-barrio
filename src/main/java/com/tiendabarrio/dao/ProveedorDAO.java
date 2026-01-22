@@ -7,13 +7,11 @@ public interface ProveedorDAO {
 
     void crear(Proveedor proveedor);
 
-    Proveedor buscarPorId(int id);
-
-    Proveedor buscarPorEmail(String email);
+    Proveedor buscarPorId(int proveedorId);
 
     List<Proveedor> listarTodos();
 
     void actualizar(Proveedor proveedor);
 
-    void eliminar(int id);
+    void eliminar(int proveedorId);
 }

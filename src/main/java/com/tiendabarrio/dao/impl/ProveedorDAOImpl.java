@@ -24,51 +24,28 @@ public class ProveedorDAOImpl implements ProveedorDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al crear proveedor", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Proveedor buscarPorId(int id) {
+    public Proveedor buscarPorId(int proveedorId) {
         String sql = "SELECT * FROM proveedor WHERE proveedor_id = ?";
         Proveedor proveedor = null;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setInt(1, proveedorId);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    proveedor = mapearProveedor(rs);
+                    proveedor = mapear(rs);
                 }
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar proveedor por id", e);
-        }
-
-        return proveedor;
-    }
-
-    @Override
-    public Proveedor buscarPorEmail(String email) {
-        String sql = "SELECT * FROM proveedor WHERE email_proveedor = ?";
-        Proveedor proveedor = null;
-
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, email);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    proveedor = mapearProveedor(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar proveedor por email", e);
+            throw new RuntimeException(e);
         }
 
         return proveedor;
@@ -84,11 +61,11 @@ public class ProveedorDAOImpl implements ProveedorDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                proveedores.add(mapearProveedor(rs));
+                proveedores.add(mapear(rs));
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al listar proveedores", e);
+            throw new RuntimeException(e);
         }
 
         return proveedores;
@@ -109,32 +86,32 @@ public class ProveedorDAOImpl implements ProveedorDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al actualizar proveedor", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void eliminar(int id) {
+    public void eliminar(int proveedorId) {
         String sql = "DELETE FROM proveedor WHERE proveedor_id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setInt(1, proveedorId);
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al eliminar proveedor", e);
+            throw new RuntimeException(e);
         }
     }
 
-    private Proveedor mapearProveedor(ResultSet rs) throws SQLException {
-        Proveedor proveedor = new Proveedor();
-        proveedor.setProveedorId(rs.getInt("proveedor_id"));
-        proveedor.setNombreProveedor(rs.getString("nombre_proveedor"));
-        proveedor.setTelefonoProveedor(rs.getString("telefono_proveedor"));
-        proveedor.setEmailProveedor(rs.getString("email_proveedor"));
-        proveedor.setDireccionProveedor(rs.getString("direccion_proveedor"));
-        return proveedor;
+    private Proveedor mapear(ResultSet rs) throws SQLException {
+        Proveedor p = new Proveedor();
+        p.setProveedorId(rs.getInt("proveedor_id"));
+        p.setNombreProveedor(rs.getString("nombre_proveedor"));
+        p.setTelefonoProveedor(rs.getString("telefono_proveedor"));
+        p.setEmailProveedor(rs.getString("email_proveedor"));
+        p.setDireccionProveedor(rs.getString("direccion_proveedor"));
+        return p;
     }
 }
