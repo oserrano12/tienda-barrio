@@ -9,9 +9,7 @@ public interface CategoriaDAO {
 
     Categoria buscarPorId(int id);
 
-    Categoria buscarPorNombre(String nombre);
-
-    List<Categoria> listarTodas();
+    List<Categoria> listarTodos();
 
     void actualizar(Categoria categoria);
 

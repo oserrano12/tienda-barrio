@@ -22,58 +22,35 @@ public class CategoriaDAOImpl implements CategoriaDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al crear categoria", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Categoria buscarPorId(int id) {
+    public Categoria buscarPorId(int categoriaId) {
         String sql = "SELECT * FROM categoria WHERE categoria_id = ?";
         Categoria categoria = null;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setInt(1, categoriaId);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    categoria = mapearCategoria(rs);
+                    categoria = mapear(rs);
                 }
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar categoria por id", e);
+            throw new RuntimeException(e);
         }
 
         return categoria;
     }
 
     @Override
-    public Categoria buscarPorNombre(String nombre) {
-        String sql = "SELECT * FROM categoria WHERE nombre_categoria = ?";
-        Categoria categoria = null;
-
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, nombre);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    categoria = mapearCategoria(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar categoria por nombre", e);
-        }
-
-        return categoria;
-    }
-
-    @Override
-    public List<Categoria> listarTodas() {
+    public List<Categoria> listarTodos() {
         String sql = "SELECT * FROM categoria";
         List<Categoria> categorias = new ArrayList<>();
 
@@ -82,11 +59,11 @@ public class CategoriaDAOImpl implements CategoriaDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                categorias.add(mapearCategoria(rs));
+                categorias.add(mapear(rs));
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al listar categorias", e);
+            throw new RuntimeException(e);
         }
 
         return categorias;
@@ -105,30 +82,30 @@ public class CategoriaDAOImpl implements CategoriaDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al actualizar categoria", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void eliminar(int id) {
+    public void eliminar(int categoriaId) {
         String sql = "DELETE FROM categoria WHERE categoria_id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setInt(1, categoriaId);
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al eliminar categoria", e);
+            throw new RuntimeException(e);
         }
     }
 
-    private Categoria mapearCategoria(ResultSet rs) throws SQLException {
-        Categoria categoria = new Categoria();
-        categoria.setCategoriaId(rs.getInt("categoria_id"));
-        categoria.setNombreCategoria(rs.getString("nombre_categoria"));
-        categoria.setDescripcionCategoria(rs.getString("descripcion_categoria"));
-        return categoria;
+    private Categoria mapear(ResultSet rs) throws SQLException {
+        Categoria c = new Categoria();
+        c.setCategoriaId(rs.getInt("categoria_id"));
+        c.setNombreCategoria(rs.getString("nombre_categoria"));
+        c.setDescripcionCategoria(rs.getString("descripcion_categoria"));
+        return c;
     }
 }
