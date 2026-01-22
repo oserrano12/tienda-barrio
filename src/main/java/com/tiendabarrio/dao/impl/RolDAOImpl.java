@@ -4,14 +4,10 @@ import com.tiendabarrio.config.ConnectionFactory;
 import com.tiendabarrio.dao.RolDAO;
 import com.tiendabarrio.model.Rol;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// Implementación JDBC del DAO Rol
 public class RolDAOImpl implements RolDAO {
 
     @Override
@@ -26,12 +22,12 @@ public class RolDAOImpl implements RolDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al crear rol", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Rol obtenerPorId(int id) {
+    public Rol buscarPorId(int id) {
         String sql = "SELECT * FROM rol WHERE id_rol = ?";
         Rol rol = null;
 
@@ -47,14 +43,14 @@ public class RolDAOImpl implements RolDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al obtener rol por id", e);
+            throw new RuntimeException(e);
         }
 
         return rol;
     }
 
     @Override
-    public Rol obtenerPorNombre(String nombre) {
+    public Rol buscarPorNombre(String nombre) {
         String sql = "SELECT * FROM rol WHERE nombre_rol = ?";
         Rol rol = null;
 
@@ -70,7 +66,7 @@ public class RolDAOImpl implements RolDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al obtener rol por nombre", e);
+            throw new RuntimeException(e);
         }
 
         return rol;
@@ -90,7 +86,7 @@ public class RolDAOImpl implements RolDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al listar roles", e);
+            throw new RuntimeException(e);
         }
 
         return roles;
@@ -109,7 +105,7 @@ public class RolDAOImpl implements RolDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al actualizar rol", e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -124,11 +120,10 @@ public class RolDAOImpl implements RolDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error al eliminar rol", e);
+            throw new RuntimeException(e);
         }
     }
 
-    // Mapea un ResultSet a un objeto Rol
     private Rol mapearRol(ResultSet rs) throws SQLException {
         Rol rol = new Rol();
         rol.setIdRol(rs.getInt("id_rol"));

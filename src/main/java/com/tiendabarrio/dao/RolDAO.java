@@ -7,9 +7,9 @@ public interface RolDAO {
 
     void crear(Rol rol);
 
-    Rol obtenerPorId(int id);
+    Rol buscarPorId(int id);
 
-    Rol obtenerPorNombre(String nombre);
+    Rol buscarPorNombre(String nombre);
 
     List<Rol> listarTodos();
 
