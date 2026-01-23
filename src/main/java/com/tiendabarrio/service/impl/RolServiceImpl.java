@@ -25,12 +25,12 @@ public class RolServiceImpl implements RolService {
 
     @Override
     public Rol obtenerRolPorId(int id) {
-        return rolDAO.obtenerPorId(id);
+        return rolDAO.buscarPorId(id);
     }
 
     @Override
     public Rol obtenerRolPorNombre(String nombre) {
-        return rolDAO.obtenerPorNombre(nombre);
+        return rolDAO.buscarPorNombre(nombre);
     }
 
     @Override
