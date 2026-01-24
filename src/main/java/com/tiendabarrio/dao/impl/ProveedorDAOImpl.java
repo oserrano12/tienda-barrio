@@ -15,7 +15,7 @@ public class ProveedorDAOImpl implements ProveedorDAO {
         String sql = "INSERT INTO proveedor (nombre_proveedor, telefono_proveedor, email_proveedor, direccion_proveedor) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, proveedor.getNombreProveedor());
             ps.setString(2, proveedor.getTelefonoProveedor());
@@ -23,8 +23,14 @@ public class ProveedorDAOImpl implements ProveedorDAO {
             ps.setString(4, proveedor.getDireccionProveedor());
             ps.executeUpdate();
 
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    proveedor.setProveedorId(generatedKeys.getInt(1));
+                }
+            }
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al crear proveedor", e);
         }
     }
 
@@ -45,7 +51,7 @@ public class ProveedorDAOImpl implements ProveedorDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al buscar proveedor por ID", e);
         }
 
         return proveedor;
@@ -65,7 +71,7 @@ public class ProveedorDAOImpl implements ProveedorDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al listar todos los proveedores", e);
         }
 
         return proveedores;
@@ -86,7 +92,7 @@ public class ProveedorDAOImpl implements ProveedorDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al actualizar proveedor", e);
         }
     }
 
@@ -101,7 +107,7 @@ public class ProveedorDAOImpl implements ProveedorDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al eliminar proveedor", e);
         }
     }
 
