@@ -15,14 +15,20 @@ public class RolDAOImpl implements RolDAO {
         String sql = "INSERT INTO rol (nombre_rol, descripcion_rol) VALUES (?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, rol.getNombreRol());
             ps.setString(2, rol.getDescripcionRol());
             ps.executeUpdate();
 
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    rol.setIdRol(generatedKeys.getInt(1));
+                }
+            }
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al crear rol", e);
         }
     }
 
@@ -43,7 +49,7 @@ public class RolDAOImpl implements RolDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al buscar rol por ID", e);
         }
 
         return rol;
@@ -66,7 +72,7 @@ public class RolDAOImpl implements RolDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al buscar rol por nombre", e);
         }
 
         return rol;
@@ -86,7 +92,7 @@ public class RolDAOImpl implements RolDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al listar todos los roles", e);
         }
 
         return roles;
@@ -105,7 +111,7 @@ public class RolDAOImpl implements RolDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al actualizar rol", e);
         }
     }
 
@@ -120,7 +126,7 @@ public class RolDAOImpl implements RolDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al eliminar rol", e);
         }
     }
 
