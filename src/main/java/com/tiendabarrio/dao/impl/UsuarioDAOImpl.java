@@ -15,7 +15,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         String sql = "INSERT INTO usuario (nombre_usuario, email_usuario, password_usuario, activo) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, usuario.getNombreUsuario());
             ps.setString(2, usuario.getEmailUsuario());
@@ -23,8 +23,14 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             ps.setBoolean(4, usuario.isActivo());
             ps.executeUpdate();
 
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    usuario.setUsuarioId(generatedKeys.getInt(1));
+                }
+            }
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al crear usuario en la base de datos", e);
         }
     }
 
@@ -45,7 +51,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al buscar usuario por ID", e);
         }
 
         return usuario;
@@ -68,7 +74,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al buscar usuario por email", e);
         }
 
         return usuario;
@@ -88,7 +94,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al listar todos los usuarios", e);
         }
 
         return usuarios;
@@ -108,7 +114,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al actualizar usuario", e);
         }
     }
 
@@ -123,7 +129,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al eliminar usuario", e);
         }
     }
 
