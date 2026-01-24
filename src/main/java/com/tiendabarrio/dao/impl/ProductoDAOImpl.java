@@ -15,7 +15,7 @@ public class ProductoDAOImpl implements ProductoDAO {
         String sql = "INSERT INTO producto (nombre_producto, precio_producto, stock_producto, activo, categoria_id, proveedor_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, producto.getNombreProducto());
             ps.setBigDecimal(2, producto.getPrecioProducto());
@@ -25,8 +25,15 @@ public class ProductoDAOImpl implements ProductoDAO {
             ps.setInt(6, producto.getProveedorId());
             ps.executeUpdate();
 
+            // CORRECCIÓN: Recuperar ID generado
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    producto.setProductoId(generatedKeys.getInt(1));
+                }
+            }
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al crear producto", e);
         }
     }
 
@@ -47,7 +54,7 @@ public class ProductoDAOImpl implements ProductoDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al buscar producto por ID", e);
         }
 
         return producto;
@@ -67,7 +74,7 @@ public class ProductoDAOImpl implements ProductoDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al listar todos los productos", e);
         }
 
         return productos;
@@ -90,7 +97,7 @@ public class ProductoDAOImpl implements ProductoDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al actualizar producto", e);
         }
     }
 
@@ -105,7 +112,7 @@ public class ProductoDAOImpl implements ProductoDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al eliminar producto", e);
         }
     }
 
