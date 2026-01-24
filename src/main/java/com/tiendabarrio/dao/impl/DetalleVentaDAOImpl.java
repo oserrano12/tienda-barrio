@@ -15,7 +15,7 @@ public class DetalleVentaDAOImpl implements DetalleVentaDAO {
         String sql = "INSERT INTO detalle_venta (venta_id, producto_id, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, detalleVenta.getVentaId());
             ps.setInt(2, detalleVenta.getProductoId());
@@ -24,8 +24,14 @@ public class DetalleVentaDAOImpl implements DetalleVentaDAO {
 
             ps.executeUpdate();
 
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    detalleVenta.setDetalleId(generatedKeys.getInt(1));
+                }
+            }
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al crear detalle de venta", e);
         }
     }
 
@@ -46,7 +52,7 @@ public class DetalleVentaDAOImpl implements DetalleVentaDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al listar detalles por venta", e);
         }
 
         return detalles;
@@ -63,13 +69,13 @@ public class DetalleVentaDAOImpl implements DetalleVentaDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al eliminar detalles por venta", e);
         }
     }
 
     private DetalleVenta mapear(ResultSet rs) throws SQLException {
         DetalleVenta d = new DetalleVenta();
-        d.setDetalleId(rs.getInt("detalle_venta_id"));
+        d.setDetalleId(rs.getInt("detalle_id"));
         d.setVentaId(rs.getInt("venta_id"));
         d.setProductoId(rs.getInt("producto_id"));
         d.setCantidad(rs.getInt("cantidad"));
