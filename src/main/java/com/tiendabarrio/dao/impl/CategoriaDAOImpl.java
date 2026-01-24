@@ -15,14 +15,20 @@ public class CategoriaDAOImpl implements CategoriaDAO {
         String sql = "INSERT INTO categoria (nombre_categoria, descripcion_categoria) VALUES (?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, categoria.getNombreCategoria());
             ps.setString(2, categoria.getDescripcionCategoria());
             ps.executeUpdate();
 
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    categoria.setCategoriaId(generatedKeys.getInt(1));
+                }
+            }
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al crear categoría", e);
         }
     }
 
@@ -43,7 +49,7 @@ public class CategoriaDAOImpl implements CategoriaDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al buscar categoría por ID", e);
         }
 
         return categoria;
@@ -63,7 +69,7 @@ public class CategoriaDAOImpl implements CategoriaDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al listar todas las categorías", e);
         }
 
         return categorias;
@@ -82,7 +88,7 @@ public class CategoriaDAOImpl implements CategoriaDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al actualizar categoría", e);
         }
     }
 
@@ -97,7 +103,7 @@ public class CategoriaDAOImpl implements CategoriaDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al eliminar categoría", e);
         }
     }
 
