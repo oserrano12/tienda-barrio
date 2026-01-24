@@ -51,3 +51,22 @@ VALUES (
     2, -- Aseo
     1 -- Proveedor general
 );
+
+-- Corregir categorías de productos
+UPDATE tienda.producto 
+SET categoria_id = 
+    CASE 
+        WHEN nombre_producto = 'Gaseosa 1.5L' THEN 2  -- Bebidas
+        WHEN nombre_producto = 'Detergente 500g' THEN 4 -- Aseo
+    END
+WHERE nombre_producto IN ('Gaseosa 1.5L', 'Detergente 500g');
+
+-- Verificar corrección
+SELECT 
+    p.nombre_producto,
+    p.precio_producto,
+    c.nombre_categoria as categoria_correcta,
+    pr.nombre_proveedor
+FROM tienda.producto p
+JOIN tienda.categoria c ON p.categoria_id = c.categoria_id
+JOIN tienda.proveedor pr ON p.proveedor_id = pr.proveedor_id;
