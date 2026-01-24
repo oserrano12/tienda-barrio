@@ -15,7 +15,7 @@ public class VentaDAOImpl implements VentaDAO {
         String sql = "INSERT INTO venta (fecha_venta, total_venta, usuario_id) VALUES (?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setTimestamp(1, Timestamp.valueOf(venta.getFechaVenta()));
             ps.setBigDecimal(2, venta.getTotalVenta());
@@ -23,8 +23,14 @@ public class VentaDAOImpl implements VentaDAO {
 
             ps.executeUpdate();
 
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    venta.setVentaId(generatedKeys.getInt(1));
+                }
+            }
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al crear venta", e);
         }
     }
 
@@ -45,7 +51,7 @@ public class VentaDAOImpl implements VentaDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al buscar venta por ID", e);
         }
 
         return venta;
@@ -65,7 +71,7 @@ public class VentaDAOImpl implements VentaDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al listar todas las ventas", e);
         }
 
         return ventas;
@@ -88,7 +94,7 @@ public class VentaDAOImpl implements VentaDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al listar ventas por usuario", e);
         }
 
         return ventas;
@@ -105,7 +111,7 @@ public class VentaDAOImpl implements VentaDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al eliminar venta", e);
         }
     }
 
