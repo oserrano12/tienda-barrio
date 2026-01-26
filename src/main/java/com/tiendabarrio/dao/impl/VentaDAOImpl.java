@@ -3,7 +3,6 @@ package com.tiendabarrio.dao.impl;
 import com.tiendabarrio.config.ConnectionFactory;
 import com.tiendabarrio.dao.VentaDAO;
 import com.tiendabarrio.model.Venta;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ public class VentaDAOImpl implements VentaDAO {
             ps.setTimestamp(1, Timestamp.valueOf(venta.getFechaVenta()));
             ps.setBigDecimal(2, venta.getTotalVenta());
             ps.setInt(3, venta.getUsuarioId());
-
             ps.executeUpdate();
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -29,6 +27,26 @@ public class VentaDAOImpl implements VentaDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al crear venta", e);
+        }
+    }
+
+    @Override
+    public void crear(Venta venta, Connection conn) {
+        String sql = "INSERT INTO venta (fecha_venta, total_venta, usuario_id) VALUES (?, ?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setTimestamp(1, Timestamp.valueOf(venta.getFechaVenta()));
+            ps.setBigDecimal(2, venta.getTotalVenta());
+            ps.setInt(3, venta.getUsuarioId());
+            ps.executeUpdate();
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    venta.setVentaId(generatedKeys.getInt(1));
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Error al crear venta", e);
         }

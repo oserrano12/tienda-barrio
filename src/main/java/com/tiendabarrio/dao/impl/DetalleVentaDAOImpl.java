@@ -3,7 +3,6 @@ package com.tiendabarrio.dao.impl;
 import com.tiendabarrio.config.ConnectionFactory;
 import com.tiendabarrio.dao.DetalleVentaDAO;
 import com.tiendabarrio.model.DetalleVenta;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,6 @@ public class DetalleVentaDAOImpl implements DetalleVentaDAO {
             ps.setInt(2, detalleVenta.getProductoId());
             ps.setInt(3, detalleVenta.getCantidad());
             ps.setBigDecimal(4, detalleVenta.getPrecioUnitario());
-
             ps.executeUpdate();
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -30,6 +28,27 @@ public class DetalleVentaDAOImpl implements DetalleVentaDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al crear detalle de venta", e);
+        }
+    }
+
+    @Override
+    public void crear(DetalleVenta detalleVenta, Connection conn) {
+        String sql = "INSERT INTO detalle_venta (venta_id, producto_id, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, detalleVenta.getVentaId());
+            ps.setInt(2, detalleVenta.getProductoId());
+            ps.setInt(3, detalleVenta.getCantidad());
+            ps.setBigDecimal(4, detalleVenta.getPrecioUnitario());
+            ps.executeUpdate();
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    detalleVenta.setDetalleId(generatedKeys.getInt(1));
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Error al crear detalle de venta", e);
         }
