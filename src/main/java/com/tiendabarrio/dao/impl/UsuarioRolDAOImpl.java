@@ -11,7 +11,8 @@ public class UsuarioRolDAOImpl implements UsuarioRolDAO {
 
     @Override
     public void asignarRol(int usuarioId, int rolId) {
-        String sql = "INSERT INTO usuario_rol (usuario_id, rol_id) VALUES (?, ?)";
+        // CAMBIO: rol_id -> id_rol
+        String sql = "INSERT INTO usuario_rol (usuario_id, id_rol) VALUES (?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -27,7 +28,8 @@ public class UsuarioRolDAOImpl implements UsuarioRolDAO {
 
     @Override
     public void eliminarRol(int usuarioId, int rolId) {
-        String sql = "DELETE FROM usuario_rol WHERE usuario_id = ? AND rol_id = ?";
+        // CAMBIO: rol_id -> id_rol
+        String sql = "DELETE FROM usuario_rol WHERE usuario_id = ? AND id_rol = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -58,7 +60,8 @@ public class UsuarioRolDAOImpl implements UsuarioRolDAO {
 
     @Override
     public List<Integer> obtenerRolesPorUsuario(int usuarioId) {
-        String sql = "SELECT rol_id FROM usuario_rol WHERE usuario_id = ?";
+        // CAMBIO: rol_id -> id_rol
+        String sql = "SELECT id_rol FROM usuario_rol WHERE usuario_id = ?";
         List<Integer> roles = new ArrayList<>();
 
         try (Connection conn = ConnectionFactory.getConnection();
@@ -68,7 +71,7 @@ public class UsuarioRolDAOImpl implements UsuarioRolDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    roles.add(rs.getInt("rol_id"));
+                    roles.add(rs.getInt("id_rol"));
                 }
             }
 
