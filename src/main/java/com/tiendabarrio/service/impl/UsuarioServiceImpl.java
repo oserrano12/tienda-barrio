@@ -6,6 +6,7 @@ import com.tiendabarrio.dao.impl.UsuarioDAOImpl;
 import com.tiendabarrio.dao.impl.UsuarioRolDAOImpl;
 import com.tiendabarrio.model.Usuario;
 import com.tiendabarrio.service.UsuarioService;
+import com.tiendabarrio.util.BCryptUtil;
 import java.util.List;
 
 public class UsuarioServiceImpl implements UsuarioService {
@@ -24,10 +25,22 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new RuntimeException("Email ya registrado");
         }
 
+        // 1. Hashear contraseña
+        String passwordHash = BCryptUtil.hashPassword(usuario.getPasswordUsuario());
+        usuario.setPasswordUsuario(passwordHash);
+
+        // 2. Guardar usuario
         usuarioDAO.crear(usuario);
 
+        // 3. Obtener usuario con ID actualizado
+        Usuario usuarioGuardado = usuarioDAO.buscarPorEmail(usuario.getEmailUsuario());
+        if (usuarioGuardado == null) {
+            throw new RuntimeException("Error al recuperar usuario guardado");
+        }
+
+        // 4. Asignar roles
         for (Integer rolId : rolesIds) {
-            usuarioRolDAO.asignarRol(usuario.getUsuarioId(), rolId);
+            usuarioRolDAO.asignarRol(usuarioGuardado.getUsuarioId(), rolId);
         }
     }
 
@@ -63,6 +76,9 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario existente = usuarioDAO.buscarPorId(usuario.getUsuarioId());
         if (existente == null) throw new RuntimeException("Usuario no encontrado");
 
+        // Preservar contraseña hasheada existente
+        usuario.setPasswordUsuario(existente.getPasswordUsuario());
+
         usuarioDAO.actualizar(usuario);
     }
 
@@ -96,7 +112,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioDAO.buscarPorId(usuarioId);
         if (usuario == null) throw new RuntimeException("Usuario no encontrado");
 
-        usuario.setPasswordUsuario(nuevaPassword.trim());
+        // Hashear nueva contraseña
+        String passwordHash = BCryptUtil.hashPassword(nuevaPassword.trim());
+        usuario.setPasswordUsuario(passwordHash);
+
         usuarioDAO.actualizar(usuario);
     }
 
@@ -108,7 +127,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioDAO.buscarPorEmail(email.trim());
         if (usuario == null) throw new RuntimeException("Credenciales inválidas");
         if (!usuario.isActivo()) throw new RuntimeException("Usuario inactivo");
-        if (!usuario.getPasswordUsuario().equals(password.trim())) {
+
+        // Verificar contraseña con BCrypt
+        boolean passwordCorrecta = BCryptUtil.checkPassword(password.trim(), usuario.getPasswordUsuario());
+
+        if (!passwordCorrecta) {
             throw new RuntimeException("Credenciales inválidas");
         }
 

@@ -70,3 +70,34 @@ SELECT
 FROM tienda.producto p
 JOIN tienda.categoria c ON p.categoria_id = c.categoria_id
 JOIN tienda.proveedor pr ON p.proveedor_id = pr.proveedor_id;
+
+-- Insertar roles básicos
+INSERT INTO rol (nombre_rol, descripcion_rol) VALUES 
+('ADMIN', 'Administrador del sistema'),
+('CAJERO', 'Empleado de caja'),
+('INVENTARIO', 'Encargado de inventario')
+ON CONFLICT (nombre_rol) DO NOTHING;
+
+-- Verificar que se insertaron
+SELECT * FROM rol;
+
+SELECT 
+    email_usuario, 
+    LEFT(password_usuario, 30) || '...' as password_hash,
+    LENGTH(password_usuario) as hash_length
+FROM tienda.usuario 
+WHERE email_usuario = 'admin.test@tienda.com';
+
+SELECT 
+    u.nombre_usuario,
+    r.nombre_rol,
+    r.descripcion_rol
+FROM tienda.usuario u
+JOIN tienda.usuario_rol ur ON u.usuario_id = ur.usuario_id
+JOIN tienda.rol r ON ur.id_rol = r.id_rol
+WHERE u.email_usuario = 'admin.test@tienda.com';
+
+-- Esta debe devolver FALSE (BCrypt hasheado, no texto plano)
+SELECT password_usuario = 'admin123' 
+FROM tienda.usuario 
+WHERE email_usuario = 'admin.test@tienda.com';
