@@ -1,24 +1,35 @@
 SET search_path TO tienda;
 
--- CREACION DE ROLES DEL SISTEMA
+-- =====================================================
+-- ROLES DEL SISTEMA
+-- =====================================================
 INSERT INTO rol (nombre_rol, descripcion_rol)
 VALUES
     ('ADMIN', 'Administrador del sistema con todos los privilegios'),
-    ('VENDEDOR', 'Usuario encargado de las ventas y atencion al cliente');
+    ('VENDEDOR', 'Usuario encargado de las ventas y atencion al cliente'),
+    ('CAJERO', 'Empleado de caja'),
+    ('INVENTARIO', 'Encargado de inventario');
 
--- CREACION DE USUARIO ADMINISTRADOR
+-- =====================================================
+-- USUARIO ADMINISTRADOR (Password: admin123)
+-- Hash generado con BCrypt (12 rounds)
+-- =====================================================
 INSERT INTO usuario (nombre_usuario, email_usuario, password_usuario, activo)
 VALUES
-    ('admin', 'admin@tienda.com', 'PENDIENTE_IMPLEMENTAR_HASH', true);
+    ('admin', 'admin@tienda.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewKyNiAYMyzJ/I0K', true);
 
--- ASIGNACION DEL ROL ADMIN AL USUARIO ADMIN
+-- =====================================================
+-- ASIGNACION ROL ADMIN
+-- =====================================================
 INSERT INTO usuario_rol (usuario_id, id_rol)
 VALUES (
     (SELECT usuario_id FROM usuario WHERE nombre_usuario = 'admin'),
     (SELECT id_rol FROM rol WHERE nombre_rol = 'ADMIN')
 );
 
--- CATEGORIAS BASE PRODUCTOS
+-- =====================================================
+-- CATEGORIAS BASE
+-- =====================================================
 INSERT INTO categoria (nombre_categoria, descripcion_categoria)
 VALUES
     ('Abarrotes', 'Productos de consumo diario'),
@@ -27,77 +38,18 @@ VALUES
     ('Aseo', 'Productos de limpieza e higiene'),
     ('Snacks', 'Golosinas y productos de consumo rapido');
 
+-- =====================================================
 -- PROVEEDORES INICIALES
+-- =====================================================
 INSERT INTO proveedor (nombre_proveedor, telefono_proveedor, email_proveedor, direccion_proveedor)
 VALUES
-    ('Proveedor General', '0000000000', 'proveedor@email.com', 'Sin inf'),
-    ('Distribuidor Local', '1111111111', 'distlocal@email.com', 'Sin inf');
+    ('Proveedor General', '0000000000', 'proveedor@email.com', 'Sin informacion'),
+    ('Distribuidor Local', '1111111111', 'distlocal@email.com', 'Sin informacion');
 
--- INSERCION DE PRODUCTOS INICIALES
+-- =====================================================
+-- PRODUCTOS INICIALES
+-- =====================================================
 INSERT INTO producto (nombre_producto, precio_producto, stock_producto, activo, categoria_id, proveedor_id)
-VALUES (
-    'Gaseosa 1.5L',
-    4500.00,
-    20,
-    TRUE, 
-    1, -- Bebidas
-    2 -- Distribuidor local
-),
-(
-    'Detergente 500g',
-    3800.00,
-    20,
-    TRUE,
-    2, -- Aseo
-    1 -- Proveedor general
-);
-
--- Corregir categorías de productos
-UPDATE tienda.producto 
-SET categoria_id = 
-    CASE 
-        WHEN nombre_producto = 'Gaseosa 1.5L' THEN 2  -- Bebidas
-        WHEN nombre_producto = 'Detergente 500g' THEN 4 -- Aseo
-    END
-WHERE nombre_producto IN ('Gaseosa 1.5L', 'Detergente 500g');
-
--- Verificar corrección
-SELECT 
-    p.nombre_producto,
-    p.precio_producto,
-    c.nombre_categoria as categoria_correcta,
-    pr.nombre_proveedor
-FROM tienda.producto p
-JOIN tienda.categoria c ON p.categoria_id = c.categoria_id
-JOIN tienda.proveedor pr ON p.proveedor_id = pr.proveedor_id;
-
--- Insertar roles básicos
-INSERT INTO rol (nombre_rol, descripcion_rol) VALUES 
-('ADMIN', 'Administrador del sistema'),
-('CAJERO', 'Empleado de caja'),
-('INVENTARIO', 'Encargado de inventario')
-ON CONFLICT (nombre_rol) DO NOTHING;
-
--- Verificar que se insertaron
-SELECT * FROM rol;
-
-SELECT 
-    email_usuario, 
-    LEFT(password_usuario, 30) || '...' as password_hash,
-    LENGTH(password_usuario) as hash_length
-FROM tienda.usuario 
-WHERE email_usuario = 'admin.test@tienda.com';
-
-SELECT 
-    u.nombre_usuario,
-    r.nombre_rol,
-    r.descripcion_rol
-FROM tienda.usuario u
-JOIN tienda.usuario_rol ur ON u.usuario_id = ur.usuario_id
-JOIN tienda.rol r ON ur.id_rol = r.id_rol
-WHERE u.email_usuario = 'admin.test@tienda.com';
-
--- Esta debe devolver FALSE (BCrypt hasheado, no texto plano)
-SELECT password_usuario = 'admin123' 
-FROM tienda.usuario 
-WHERE email_usuario = 'admin.test@tienda.com';
+VALUES 
+    ('Gaseosa 1.5L', 4500.00, 20, TRUE, 2, 2),      -- Bebidas, Distribuidor Local
+    ('Detergente 500g', 3800.00, 20, TRUE, 4, 1);   -- Aseo, Proveedor General
