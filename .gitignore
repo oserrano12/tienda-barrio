@@ -1,32 +1,55 @@
 # ===============================
-# ARCHIVOS DE INTELLIJ IDEA
+# INTELLIJ IDEA
 # ===============================
 .idea/
 *.iml
+*.ipr
+*.iws
+out/
 
 # ===============================
 # MAVEN
 # ===============================
 target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ===============================
+# JAVA
+# ===============================
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+hs_err_pid*
+
+# ===============================
+# CONFIGURACIONES LOCALES (NUNCA SUBIR)
+# ===============================
+src/main/resources/application.properties
+.env
+.env.local
 
 # ===============================
 # ARCHIVOS DE SISTEMA
 # ===============================
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # ===============================
-# VARIABLES DE ENTORNO / CONFIGS LOCALES
-# ===============================
-.env
-
-# ===============================
-# LOGS
+# LOGS Y TEMPORALES
 # ===============================
 *.log
-
-# ===============================
-# ARCHIVOS TEMPORALES
-# ===============================
 *.tmp
+*.temp
 *.swp
+*~
