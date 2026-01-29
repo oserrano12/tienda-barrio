@@ -16,7 +16,7 @@ VALUES
 -- =====================================================
 INSERT INTO usuario (nombre_usuario, email_usuario, password_usuario, activo)
 VALUES
-    ('admin', 'admin@tienda.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewKyNiAYMyzJ/I0K', true);
+    ('admin', 'admin@tienda.com', '$2a$12$1GuPwIuLi1Yp7ruKoTus7e6TraF.Q/QPO90U6BeWIL5UHWN/Z0UZa', true);
 
 -- =====================================================
 -- ASIGNACION ROL ADMIN
