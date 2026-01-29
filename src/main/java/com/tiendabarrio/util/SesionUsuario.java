@@ -1,6 +1,12 @@
 package com.tiendabarrio.util;
 
+import com.tiendabarrio.dao.RolDAO;
+import com.tiendabarrio.dao.UsuarioRolDAO;
+import com.tiendabarrio.dao.impl.RolDAOImpl;
+import com.tiendabarrio.dao.impl.UsuarioRolDAOImpl;
+import com.tiendabarrio.model.Rol;
 import com.tiendabarrio.model.Usuario;
+import java.util.List;
 
 public class SesionUsuario {
     private static SesionUsuario instancia;
@@ -54,11 +60,27 @@ public class SesionUsuario {
 
     // Verifica si el usuario tiene un rol especifico
     public boolean tieneRol(String nombreRol) {
-        // Si no esta autenticado no tiene ningun rol
+        // Si no está autenticado, no tiene ningún rol
         if (!autenticado || usuarioActual == null) {
             return false;
         }
-        return true;
+
+        // Consultar roles reales del usuario en la base de datos
+        UsuarioRolDAO usuarioRolDAO = new UsuarioRolDAOImpl();
+        RolDAO rolDAO = new RolDAOImpl();
+
+        // Obtener IDs de roles asignados al usuario
+        List<Integer> rolesIds = usuarioRolDAO.obtenerRolesPorUsuario(usuarioActual.getUsuarioId());
+
+        // Verificar si alguno coincide con el nombre buscado
+        for (Integer rolId : rolesIds) {
+            Rol rol = rolDAO.buscarPorId(rolId);
+            if (rol != null && rol.getNombreRol().equalsIgnoreCase(nombreRol)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Muestra el estado de la sesion (para debugging)
