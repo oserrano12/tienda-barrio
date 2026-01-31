@@ -1,6 +1,7 @@
 package com.tiendabarrio.ui.view;
 
 import com.tiendabarrio.model.Producto;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -23,6 +25,9 @@ public class ProductoView {
     private Button btnVolver;
     private Button btnActualizar;
     private Label lblTitulo;
+    private TextField txtBuscar;
+    private Button btnBuscar;
+    private Button btnLimpiar;
 
     public ProductoView() {
         crearInterfaz();
@@ -41,6 +46,25 @@ public class ProductoView {
         lblTitulo = new Label("Gestión de Productos");
         lblTitulo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;");
         header.getChildren().add(lblTitulo);
+
+        // Campo de búsqueda
+        HBox searchBox = new HBox(10);
+        searchBox.setAlignment(Pos.CENTER);
+        searchBox.setPadding(new Insets(10, 0, 10, 0));
+
+        txtBuscar = new TextField();
+        txtBuscar.setPromptText("Buscar producto...");
+        txtBuscar.setPrefWidth(250);
+
+        btnBuscar = new Button("🔍 Buscar");
+        btnBuscar.setStyle("-fx-padding: 5 15;");
+
+        btnLimpiar = new Button("❌ Limpiar");
+        btnLimpiar.setStyle("-fx-padding: 5 15;");
+
+        searchBox.getChildren().addAll(txtBuscar, btnBuscar, btnLimpiar);
+        header.getChildren().add(searchBox);
+
         root.setTop(header);
 
         // Tabla de productos
@@ -106,4 +130,7 @@ public class ProductoView {
     public Button getBtnVolver() { return btnVolver; }
     public Button getBtnActualizar() { return btnActualizar; }
     public TableView<Producto> getTablaProductos() { return tablaProductos; }
+    public TextField getTxtBuscar() { return txtBuscar; }
+    public Button getBtnBuscar() { return btnBuscar; }
+    public Button getBtnLimpiar() { return btnLimpiar; }
 }
