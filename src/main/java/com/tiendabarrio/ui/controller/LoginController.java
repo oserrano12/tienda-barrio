@@ -2,6 +2,7 @@ package com.tiendabarrio.ui.controller;
 
 import com.tiendabarrio.service.LoginService;
 import com.tiendabarrio.ui.view.LoginView;
+import com.tiendabarrio.util.SesionUsuario;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
@@ -60,17 +61,18 @@ public class LoginController {
     }
 
     private void abrirVentanaPrincipal() {
-        // Aquí abriremos la ventana principal (la creamos después)
-        // Por ahora mostramos un mensaje temporal
+        // Obtener nombre del usuario logueado
+        String nombreUsuario = SesionUsuario.getInstancia().getUsuarioActual().getNombreUsuario();
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Login Exitoso");
-        alert.setHeaderText(null);
-        alert.setContentText("Bienvenido al sistema\n\nAquí irá la ventana principal");
-        alert.showAndWait();
-
-        // Cerrar login
+        // Cerrar ventana de login
         stage.close();
+
+        // Abrir ventana principal
+        Platform.runLater(() -> {
+            Stage mainStage = new Stage();
+            MainController mainController = new MainController(mainStage, nombreUsuario);
+            mainController.mostrar();
+        });
     }
 
     public void mostrar() {

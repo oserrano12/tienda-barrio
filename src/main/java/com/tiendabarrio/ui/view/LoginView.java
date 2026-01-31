@@ -30,7 +30,7 @@ public class LoginView {
         root.setStyle("-fx-background-color: #f5f5f5;");
 
         // Título
-        Label titulo = new Label("Tienda El Barrio");
+        Label titulo = new Label("Tienda Barrio");
         titulo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         // Subtítulo
