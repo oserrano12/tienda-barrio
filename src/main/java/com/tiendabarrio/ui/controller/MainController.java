@@ -19,11 +19,16 @@ public class MainController {
         configurarEventos();
     }
 
+    private void abrirModuloProductos() {
+        // Abrir módulo de productos como ventana separada (encima)
+        Stage productoStage = new Stage();
+        ProductoController productoController = new ProductoController(productoStage, this);
+        productoController.mostrar();
+    }
+
     private void configurarEventos() {
         // Botón Productos (preparado para futura funcionalidad)
-        view.getBtnProductos().setOnAction(e -> {
-            mostrarMensaje("Módulo de Productos", "Aquí irá la gestión de productos");
-        });
+        view.getBtnProductos().setOnAction(e -> abrirModuloProductos());
 
         // Botón Ventas (preparado para futura funcionalidad)
         view.getBtnVentas().setOnAction(e -> {
