@@ -15,7 +15,8 @@ public class MainView {
     private Label lblBienvenida;
     private Button btnProductos;
     private Button btnVentas;
-    private Button btnUsuarios;
+    private Button btnInventario;
+    private Button btnUsuariosAdmin;
     private Button btnCerrarSesion;
 
     public MainView() {
@@ -53,9 +54,10 @@ public class MainView {
         // Botones de módulos
         btnProductos = crearBotonMenu("📦 Productos", "#3498db");
         btnVentas = crearBotonMenu("🛒 Ventas", "#27ae60");
-        btnUsuarios = crearBotonMenu("👥 Usuarios", "#9b59b6");
+        btnInventario = crearBotonMenu("📦 Inventario", "#9b59b6");
+        btnUsuariosAdmin = crearBotonMenu("👥 Usuarios", "#e74c3c");
 
-        menu.getChildren().addAll(menuTitulo, btnProductos, btnVentas, btnUsuarios);
+        menu.getChildren().addAll(menuTitulo, btnProductos, btnVentas, btnInventario, btnUsuariosAdmin);
         root.setCenter(menu);
 
         // ===== FOOTER (Abajo) =====
@@ -103,6 +105,7 @@ public class MainView {
     // Getters para el Controller
     public Button getBtnProductos() { return btnProductos; }
     public Button getBtnVentas() { return btnVentas; }
-    public Button getBtnUsuarios() { return btnUsuarios; }
+    public Button getBtnInventario() { return btnInventario; }
+    public Button getBtnUsuariosAdmin() { return btnUsuariosAdmin; }
     public Button getBtnCerrarSesion() { return btnCerrarSesion; }
 }

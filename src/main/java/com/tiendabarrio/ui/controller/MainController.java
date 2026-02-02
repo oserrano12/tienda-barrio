@@ -10,56 +10,101 @@ public class MainController {
     private final MainView view;
     private final Stage stage;
     private final String nombreUsuario;
+    private final boolean esAdmin;
 
     public MainController(Stage stage, String nombreUsuario) {
         this.stage = stage;
         this.nombreUsuario = nombreUsuario;
+        this.esAdmin = SesionUsuario.getInstancia().tieneRol("ADMIN");
+
         this.view = new MainView();
 
+        configurarVistaSegunRol();
         configurarEventos();
     }
 
+    private void configurarVistaSegunRol() {
+        // Si NO es admin, ocultar botones de administración
+        if (!esAdmin) {
+            view.getBtnInventario().setVisible(false);
+            view.getBtnInventario().setManaged(false);
+
+            view.getBtnUsuariosAdmin().setVisible(false);
+            view.getBtnUsuariosAdmin().setManaged(false);
+
+            System.out.println("Acceso como VENDEDOR - Funciones limitadas");
+        } else {
+            System.out.println("Acceso como ADMIN - Todas las funciones disponibles");
+        }
+    }
+
+    private void configurarEventos() {
+        // Productos: TODOS pueden ver
+        view.getBtnProductos().setOnAction(e -> abrirModuloProductos());
+
+        // Ventas: TODOS pueden acceder
+        view.getBtnVentas().setOnAction(e -> abrirModuloVentas());
+
+        // Inventario: Solo ADMIN
+        view.getBtnInventario().setOnAction(e -> {
+            if (esAdmin) {
+                abrirModuloInventario();
+            } else {
+                mostrarAccesoDenegado("Inventario");
+            }
+        });
+
+        // Usuarios (gestión): Solo ADMIN
+        view.getBtnUsuariosAdmin().setOnAction(e -> {
+            if (esAdmin) {
+                abrirModuloUsuarios();
+            } else {
+                mostrarAccesoDenegado("Gestión de Usuarios");
+            }
+        });
+
+        // Cerrar sesión: TODOS
+        view.getBtnCerrarSesion().setOnAction(e -> cerrarSesion());
+    }
+
+    private void mostrarAccesoDenegado(String modulo) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Acceso Denegado");
+        alert.setHeaderText(null);
+        alert.setContentText("No tienes permisos para acceder a: " + modulo + "\n\nContacta al administrador.");
+        alert.showAndWait();
+    }
+
     private void abrirModuloProductos() {
-        // Abrir módulo de productos como ventana separada (encima)
         Stage productoStage = new Stage();
         ProductoController productoController = new ProductoController(productoStage, this);
         productoController.mostrar();
     }
 
-    private void configurarEventos() {
-        // Botón Productos (preparado para futura funcionalidad)
-        view.getBtnProductos().setOnAction(e -> abrirModuloProductos());
-
-        // Botón Ventas (preparado para futura funcionalidad)
-        view.getBtnVentas().setOnAction(e -> {
-            mostrarMensaje("Módulo de Ventas", "Aquí irá el punto de venta");
-        });
-
-        // Botón Usuarios (preparado para futura funcionalidad)
-        view.getBtnUsuarios().setOnAction(e -> {
-            mostrarMensaje("Módulo de Usuarios", "Aquí irá la gestión de usuarios");
-        });
-
-        // Botón Cerrar Sesión
-        view.getBtnCerrarSesion().setOnAction(e -> cerrarSesion());
+    private void abrirModuloVentas() {
+        Stage ventaStage = new Stage();
+        VentaController ventaController = new VentaController(ventaStage);
+        ventaController.mostrar();
     }
 
-    private void mostrarMensaje(String titulo, String contenido) {
+    private void abrirModuloInventario() {
+        Stage inventarioStage = new Stage();
+        InventarioController inventarioController = new InventarioController(inventarioStage);
+        inventarioController.mostrar();
+    }
+
+    private void abrirModuloUsuarios() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
+        alert.setTitle("En desarrollo");
         alert.setHeaderText(null);
-        alert.setContentText(contenido + "\n\n(En desarrollo)");
+        alert.setContentText("Módulo de gestión de usuarios - Próximamente");
         alert.showAndWait();
     }
 
     private void cerrarSesion() {
-        // Cerrar sesión en el sistema
         SesionUsuario.getInstancia().cerrarSesion();
-
-        // Volver a la pantalla de login
         stage.close();
 
-        // Crear nuevo stage para login
         Platform.runLater(() -> {
             Stage newStage = new Stage();
             LoginController loginController = new LoginController(newStage);

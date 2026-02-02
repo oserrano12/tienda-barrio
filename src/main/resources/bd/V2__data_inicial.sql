@@ -53,3 +53,22 @@ INSERT INTO producto (nombre_producto, precio_producto, stock_producto, activo, 
 VALUES 
     ('Gaseosa 1.5L', 4500.00, 20, TRUE, 2, 2),      -- Bebidas, Distribuidor Local
     ('Detergente 500g', 3800.00, 20, TRUE, 4, 1);   -- Aseo, Proveedor General
+
+
+-- 1. Crear usuario vendedor (password: vendedor123)
+INSERT INTO tienda.usuario (nombre_usuario, email_usuario, password_usuario, activo)
+VALUES ('vendedor1', 'vendedor@tienda.com', '$2a$12$1GuPwIuLi1Yp7ruKoTus7e6TraF.Q/QPO90U6BeWIL5UHWN/Z0UZa', true);
+
+-- 2. Asignar rol VENDEDOR
+INSERT INTO tienda.usuario_rol (usuario_id, id_rol)
+VALUES (
+    (SELECT usuario_id FROM tienda.usuario WHERE email_usuario = 'vendedor@tienda.com'),
+    (SELECT id_rol FROM tienda.rol WHERE nombre_rol = 'VENDEDOR')
+);
+
+-- 3. Verificar
+SELECT u.nombre_usuario, r.nombre_rol 
+FROM tienda.usuario u
+JOIN tienda.usuario_rol ur ON u.usuario_id = ur.usuario_id
+JOIN tienda.rol r ON ur.id_rol = r.id_rol
+WHERE u.email_usuario = 'vendedor@tienda.com';
