@@ -137,4 +137,18 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         return usuario;
     }
+
+    @Override
+    public void eliminar(int usuarioId) {
+        if (usuarioId <= 0) throw new IllegalArgumentException("ID inválido");
+
+        Usuario usuario = usuarioDAO.buscarPorId(usuarioId);
+        if (usuario == null) throw new RuntimeException("Usuario no encontrado");
+
+        // Primero eliminar roles asociados (por integridad referencial)
+        usuarioRolDAO.eliminarRolesPorUsuario(usuarioId);
+
+        // Luego eliminar el usuario
+        usuarioDAO.eliminar(usuarioId);
+    }
 }

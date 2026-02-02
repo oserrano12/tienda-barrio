@@ -13,4 +13,5 @@ public interface UsuarioService {
     void activarUsuario(int usuarioId);
     void cambiarPassword(int usuarioId, String nuevaPassword);
     Usuario login(String email, String password);
+    void eliminar(int usuarioId);
 }

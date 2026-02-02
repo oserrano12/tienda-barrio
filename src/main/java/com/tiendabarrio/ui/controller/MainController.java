@@ -94,11 +94,9 @@ public class MainController {
     }
 
     private void abrirModuloUsuarios() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("En desarrollo");
-        alert.setHeaderText(null);
-        alert.setContentText("Módulo de gestión de usuarios - Próximamente");
-        alert.showAndWait();
+        Stage usuarioStage = new Stage();
+        UsuarioAdminController usuarioAdminController = new UsuarioAdminController(usuarioStage);
+        usuarioAdminController.mostrar();
     }
 
     private void cerrarSesion() {
